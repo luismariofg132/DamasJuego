@@ -10,7 +10,7 @@
 |#
 
 ; Dimensiones de la ventana del tablero
-(define dimensionX 1200)
+(define dimensionX 700)
 (define dimensionY 700)
 
 ; Cantidad de cuadros
@@ -24,10 +24,6 @@
 
 ; Define el titulo de la ventana
 (define tituloVentana "Juego Damas - Programacion 1 - Juan D Malagon - Susana M Perez - Luis M Franco")
-
-; Define el mensaje de bienvenida
-(define mensajeBienvenida (list "Bienvenid@ al juego" "Cada jugador debera introducior" "la coordenada de inicio y la de fin para hacer un movimiento"
-                                 "Ejemplo: A2 - B4"))
 
 ; Define dos listas para las guias del tablero
 (define listaLetras (list "A" "B" "C" "D" "E" "F" "G" "H"))
@@ -45,14 +41,6 @@
 
 ; Creacion de la ventana
 (define ventana(open-viewport tituloVentana dimensionX dimensionY))
-
-; Funcion recursiva encargada de dibujar el letrero de bienvenida
-(define (dibujarBienvenida cantidadNeto cantidadTotal posY)
-  ((draw-string ventana) (make-posn 700 posY) (list-ref mensajeBienvenida cantidadNeto) "black")
-  (if (equal? cantidadNeto cantidadTotal)(display "Bienvenida dibujada")
-      (dibujarBienvenida (+ cantidadNeto 1) cantidadTotal (+ posY 20))
-      )
-  )
 
 ; Funcion recursiva encargada de dibujar las guias del tablero
 (define (dibujarGuias cantidadNeto cantidadTotal posX posY)
@@ -89,6 +77,5 @@
 (define (disparador)
   (dibujarTablero 1 cantidadCuadros 1 50 50 0)
   (dibujarGuias 0 (- (length listaLetras) 1) 75 100 )
-  (dibujarBienvenida 0 (- (length mensajeBienvenida) 1) 60)
   )
 (disparador)
