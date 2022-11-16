@@ -39,9 +39,15 @@
 
 ; Color que empieza a jugar
 (define colorInicial "Verde")
+(define colorFinal "")
 
 ; Define las posiciones iniciales y finales
 (define posicion "")
+
+; Instruccion
+(define instruccion "Ingrese la posicion inicial")
+
+(define instruccionAnterior "")
 
 
 #|
@@ -189,6 +195,10 @@ Bloque de codigo encargado de crear las posiciones son exactamente 64 posiciones
   (map (lambda (x) ((draw-solid-ellipse ventana) x 75 75 "red") ) fichasRojas)
   )
 
+(define (dibujarNegras fichas)
+  (map (lambda (x) ((draw-solid-ellipse ventana) x 75 75 "black") ) fichas)
+  )
+
 #|
 ---------------------------------------------------------------------------------
 Bloque de codigo encargado de recibir los comandos por teclado
@@ -217,6 +227,12 @@ Bloque de codigo encargado de recibir los comandos por teclado
   (string-append letra1 letra3)
   )
 
+(define (capPosicion2)
+  (define letra1 (capturarTecla))
+  (define letra2 (capturarTecla))
+  (define letra3 (capturarTecla))
+  (string-append letra1 letra3)
+  )
 #|
 ---------------------------------------------------------------------------------
 Bloque de codigo encargado de hacer las validaciones de los movimientos
@@ -237,7 +253,60 @@ Bloque de codigo encargado de hacer las validaciones de los movimientos
   (if (encontrarValor posicionesProhibidasString posFinal 0) #t #f)
 )
 
+; Funcion encargada de actualizar un elemento de una lista
+(define (actualizarLista lista vInicial vFinal)
+  (map (lambda (x) (if (equal? x vInicial) vFinal x))  lista)
+  )
 
+; Funcion para encontrar el indice de una lista
+(define (encontrarPos lista valor contador)
+  (cond
+    ((equal? contador (+ (length lista) 1)) #f)
+    ((equal? (list-ref lista  contador) valor) contador)
+    (else  (encontrarPos lista valor (+ contador 1)))
+    )
+  )
+
+
+
+
+(define (juego)
+  (colorTurno colorInicial colorFinal)
+  ;(dibujarInstruccion instruccion instruccionAnterior)
+  (dibujarFichas)
+  (define posicion1 (capPosicion))
+  (define posicion2 (capPosicion))
+  ; Valida y corrige que posicion 2 no este vacio
+  (if (equal? posicion1 "  ") (set! posicion1 (capPosicion)) posicion1)
+  (if (equal? posicion2 "  ") (set! posicion2 (capPosicion)) posicion2)
+  (display posicion1)(newline)
+  (display posicion2)(newline)
+
+  ; Valida que no sea un movimiento prohibido
+  (if (not (validarCuadrosBlanco posicion2))
+      ; Si el movimiento es valido
+      (begin
+        ; Actualizar la lista de la ficha
+        (if (equal? colorInicial "Verde")
+            (begin
+              (dibujarNegras fichasVerdes)
+              (set! fichasVerdes (actualizarLista fichasVerdes (list-ref posiciones (encontrarPos posicionesString posicion1 0)) (list-ref posiciones (encontrarPos posicionesString posicion2 0))))
+              (set! colorFinal "Verde")
+              (set! colorInicial "Rojo")
+              (sleep 2)
+              (juego)
+              )
+            (begin
+              (dibujarNegras fichasRojas)
+              (set! fichasRojas (actualizarLista fichasRojas (list-ref posiciones (encontrarPos posicionesString posicion1 0)) (list-ref posiciones (encontrarPos posicionesString posicion2 0))))
+              (set! colorFinal "Rojo")
+              (set! colorInicial "Verde")
+              (juego)
+              )
+        )
+        )
+      (display "Movimiento no valido"))
+  )
 
 #|
 ------------------------------------------------------------------------------
@@ -250,11 +319,7 @@ funcion encargada de escuchar las teclas
   (dibujarTablero 1 cantidadCuadros 1 50 50 0)
   (dibujarGuias 0 (- (length listaLetras) 1) 75 100 )
   (dibujarBienvenida 0 (- (length mensajeBienvenida) 1) 60)
-  (colorTurno colorInicial colorInicial)
-  (dibujarInstruccion  "Ingrese la posicion inicial" "Ingrese la posicion inicial")
-  (dibujarFichas)
-  
-  (validarCuadrosBlanco "h7")
+  (juego)
   )
 (disparador)
 
