@@ -17,7 +17,7 @@ El juego que decidimos hacer es una nueva version de un clasico llamado "Damas" 
 
 ### Desarrolladores
 
-- Maria Susana Perez 
+- Maria Susana Perez - m.perez5@utp.edu.co
 - Juan Dario Malagon Marin - j.malagon@utp.edu.co
 - Luis Mario Franco Gomez - mario.franco@utp.edu.co
 
