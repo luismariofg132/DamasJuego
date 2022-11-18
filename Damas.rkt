@@ -224,6 +224,7 @@ Bloque de codigo encargado de recibir los comandos por teclado
   (define letra1 (capturarTecla))
   (define letra2 (capturarTecla))
   (define letra3 (capturarTecla))
+  (define letra4 (capturarTecla))
   (string-append letra1 letra3)
   )
 
@@ -274,11 +275,18 @@ Bloque de codigo encargado de hacer las validaciones de los movimientos
   (colorTurno colorInicial colorFinal)
   ;(dibujarInstruccion instruccion instruccionAnterior)
   (dibujarFichas)
+
+  ;Decide el ganador en caso de haber
+  (cond
+    ((< (length fichasVerdes) 2)((draw-string ventana) (make-posn 700 170) "El ganador es el color Rojo!!!" "black"))
+    ((< (length fichasRojas) 2)((draw-string ventana) (make-posn 700 170) "El ganador es el color Verde!!!" "black"))
+    )
+  
   (define posicion1 (capPosicion))
   (define posicion2 (capPosicion))
   ; Valida y corrige que posicion 2 no este vacio
-  (if (equal? posicion1 "  ") (set! posicion1 (capPosicion)) posicion1)
-  (if (equal? posicion2 "  ") (set! posicion2 (capPosicion)) posicion2)
+  ;(if (equal? posicion1 "  ") (set! posicion1 (capPosicion)) posicion1)
+  ;(if (equal? posicion2 "  ") (set! posicion2 (capPosicion)) posicion2)
   (display posicion1)(newline)
   (display posicion2)(newline)
 
@@ -290,23 +298,29 @@ Bloque de codigo encargado de hacer las validaciones de los movimientos
         (if (equal? colorInicial "Verde")
             (begin
               (dibujarNegras fichasVerdes)
-              (set! fichasVerdes (actualizarLista fichasVerdes (list-ref posiciones (encontrarPos posicionesString posicion1 0)) (list-ref posiciones (encontrarPos posicionesString posicion2 0))))
+              (cond
+                ((encontrarValor fichasRojas (list-ref posiciones (encontrarPos posicionesString posicion2 0)) 0) (set! fichasRojas (remove (list-ref posiciones (encontrarPos posicionesString posicion2 0)) fichasRojas )))
+                )
+              (set! fichasVerdes (actualizarLista fichasVerdes (list-ref posiciones (encontrarPos posicionesString posicion1 0)) (list-ref posiciones (encontrarPos posicionesString posicion2 0))))                       
               (set! colorFinal "Verde")
-              (set! colorInicial "Rojo")
-              (sleep 2)
+              (set! colorInicial "Rojo")              
               (juego)
               )
             (begin
               (dibujarNegras fichasRojas)
+              (cond
+                ((encontrarValor fichasVerdes (list-ref posiciones (encontrarPos posicionesString posicion2 0)) 0) (set! fichasVerdes (remove (list-ref posiciones (encontrarPos posicionesString posicion2 0)) fichasVerdes )))
+                )
               (set! fichasRojas (actualizarLista fichasRojas (list-ref posiciones (encontrarPos posicionesString posicion1 0)) (list-ref posiciones (encontrarPos posicionesString posicion2 0))))
               (set! colorFinal "Rojo")
               (set! colorInicial "Verde")
               (juego)
               )
+            )
         )
-        )
-      (display "Movimiento no valido"))
-  )
+      ; Si el movimiento no es valido se vuelve a llamar a la funcion sin modificar nada
+      (juego)
+  ))
 
 #|
 ------------------------------------------------------------------------------
